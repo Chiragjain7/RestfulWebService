@@ -50,6 +50,20 @@ public class UserJPAController1 {
         return ResponseEntity.created(location).build();
     }
 
+    @PutMapping("jpa/users/{id}")
+    public void updatePerson(@RequestBody Person person, @PathVariable int id){
+        Optional<Person> foundUser=userRepositoryService.findById(id);
+        if(!foundUser.isPresent()){
+            throw new UserNotFoundException("id- "+id);
+            // throw new RuntimeException("error");
+        }
+        //System.out.println(person.getDate());
+        Person per=foundUser.get();
+        //System.out.println(per);
+        per.setDate(person.getDate());
+        userRepositoryService.save(per);
+    }
+
     @DeleteMapping("jpa/users/{id}")
     public void deleteId(@PathVariable int id){
         userRepositoryService.deleteById(id);
@@ -91,6 +105,20 @@ public class UserJPAController1 {
                 path("/{id}").
                 buildAndExpand(savedPost.getId()).toUri();
         return ResponseEntity.created(location).build();
+    }
+
+    @PutMapping("jpa/users/{id}/posts/{pid}")
+    public void updatePosts(@RequestBody Post post, @PathVariable int pid){
+        Optional<Post> foundPost=postRepositoryService.findById(pid);
+        if(!foundPost.isPresent()){
+            throw new UserNotFoundException("post id- "+pid);
+        }
+        postRepositoryService.findById(pid);
+        //System.out.println(person.getDate());
+        Post updatedPost=foundPost.get();
+        //System.out.println(per);
+        updatedPost.setDescription(post.getDescription());
+        postRepositoryService.save(updatedPost);
     }
 
     @DeleteMapping("jpa/users/{id}/posts/{pid}")
